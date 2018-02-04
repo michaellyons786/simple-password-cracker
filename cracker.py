@@ -4,7 +4,6 @@
 
 import time
 import random
-import matplotlib.pyplot as plt
 
 
 class PasswordCracker:
@@ -99,24 +98,6 @@ def write_data(round_times, mean_time, mean_attempts, password):
         index += 1
 
     file_object.close()
-
-
-def plot_experiment(number_of_rounds, crack_times, crack_attempts):
-    rounds = range(1, int(number_of_rounds) + 1)
-    plt.plot(rounds, crack_times, '-')
-    plt.xlabel("Round")
-    plt.ylabel("Time (s)")
-    plt.grid(True)
-    plt.title("Time to crack")
-    plt.savefig("time")
-    plt.clf()
-
-    plt.plot(rounds, crack_attempts, '-')
-    plt.xlabel("Round")
-    plt.ylabel("Attempts to crack (s)")
-    plt.grid(True)
-    plt.title("Attempts to crack")
-    plt.savefig("attempts")
 
 
 if __name__ == "__main__":
