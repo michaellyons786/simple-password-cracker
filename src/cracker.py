@@ -4,7 +4,7 @@
 
 import time
 import random
-
+import numpy as np
 
 class PasswordCracker:
     def __init__(self, password, password_list, pad_list):
@@ -24,8 +24,8 @@ class PasswordCracker:
             print("Time: ", time_elapsed)
             print("Attempts: ", attempts_made)
 
-        mean_time = mean(round_times)
-        mean_attempts = mean(round_attempts)
+        mean_time = np.mean(round_times)
+        mean_attempts = np.mean(round_attempts)
 
         return mean_time, mean_attempts, round_times
 
@@ -39,8 +39,8 @@ class PasswordCracker:
             back_pad = get_random_pad(self.pad_list)
 
             guess = front_pad + get_random_password(self.password_list) + back_pad
-            print(guess)
-            time.sleep(1)
+            if guesses_made % 100000 is 0:
+                print("Guess " + str(guesses_made) + ": " + guess)
             guesses_made += 1
 
         stop = time.time()
@@ -76,39 +76,60 @@ def get_random_pad(pads):
     return pad
 
 
-def mean(collection):
-    sum_of_elements = 0
-    for element in collection:
-        sum_of_elements += element
-
-    return sum_of_elements / len(collection)
+def password_in_file(password, passwords):
+    return password in passwords
 
 
-def write_data(round_times, mean_time, mean_attempts, password):
-    file_object = open('data.csv', 'w')
-
-    file_object.write("password, " + password + '\n')
-    file_object.write("mean_time, " + "{0:.2f}".format(mean_time) + '\n')
-    file_object.write("mean_attempts, " + str(mean_attempts) + '\n')
+def invalid_pad(pad, pad_list):
+    return is_not_homogeneous(pad) or len(pad) > 10 or pad[0] not in pad_list
 
 
-    index = 1
-    for round in round_times:
-        file_object.write(str(index) + ', ' + "{0:.2f}".format(round) + '\n')
-        index += 1
+def is_not_homogeneous(pad):
+    initial_pad = pad[0]
 
-    file_object.close()
+    for p in pad:
+        if p != initial_pad:
+            return True
+
+    return False
+
+def get_pad(pads):
+    correct_pad = False
+    while not correct_pad:
+        print("Available pads: " + str(pads))
+        print("Pad length should be between 0 and 10")
+        print("Pads should be homogeneous (all of the same character), but left and right pads can differ")
+        left_pad = input("Please enter left pad\n")
+        right_pad = input("Please enter right pad\n")
+
+        if invalid_pad(left_pad, pads) or invalid_pad(right_pad, pads):
+            print("Invalid pad, please reenter valid pads.")
+        else:
+            correct_pad = True
+
+    return left_pad, right_pad
 
 
 if __name__ == "__main__":
-    words = load_list("words.txt")
-    a = []
-    for _ in range(6):
-        a.append(random.choice(words))
+    print("Please note that if the password list or pad list is too long, then the program may not finish in your "
+          "lifetime. This is a toy cracker!")
+    password = input("Please enter password\n")
+    iterations = input("Please enter how many times you'd like to run the cracker\n")
 
-    print(len(words))
-    print(a)
+    passwords_file = input("Please enter location of password list\n")
+    passwords = load_list(passwords_file)
 
+    if password_in_file(password, passwords):
+        pads_file = input("Please enter location of pad list\n")
+        pads = load_list(pads_file)
+
+        left_pad, right_pad = get_pad(pads)
+        full_password = left_pad + password + right_pad
+
+        cracker = PasswordCracker(full_password, passwords, pads)
+        cracker.run_experiment(int(iterations))
+    else:
+        print("Error: Password " + password + " not in password list, program will *never* crack password!")
 
 
 # References
