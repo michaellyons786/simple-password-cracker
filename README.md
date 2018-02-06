@@ -1,5 +1,6 @@
 # Simple Password Cracker
 *Notice: Password lists in data contain offensive passwords*
+
 I wrote the simple password cracker as a tool to run an experiment on "haystacking", the practice of padding passwords to get low-entropy length added to a password. The purpose of this tool is *not* to crack passwords or to show the haystacking is bad practice. Rather, it's to show that simply adding padding to bad passwords doesn't make you safer. 
 
 ## How It Works
