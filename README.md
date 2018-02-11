@@ -11,4 +11,4 @@ There are no highfalutin heuristics at work here: the program simply checks comb
 ![finish](https://github.com/michaellyons786/simple-password-cracker/blob/master/data/finish.png)
 
 ### References
-Password lists, https://github.com/danielmiessler/SecLists
+[Password lists](https://github.com/danielmiessler/SecLists)
