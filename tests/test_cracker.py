@@ -1,4 +1,4 @@
-from src.cracker import *
+from password_cracker.cracker import *
 
 def test_is_not_homogeneous():
     correct_pad = "......"
