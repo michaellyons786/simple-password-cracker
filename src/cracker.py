@@ -85,7 +85,10 @@ def invalid_pad(pad, pad_list):
 
 
 def is_not_homogeneous(pad):
-    initial_pad = pad[0]
+    if len(pad) > 0:
+        initial_pad = pad[0]
+    else:
+        return False
 
     for p in pad:
         if p != initial_pad:
