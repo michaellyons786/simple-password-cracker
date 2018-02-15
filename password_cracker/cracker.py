@@ -12,24 +12,22 @@ class PasswordCracker:
         self.pad_list = pad_list
         self.password = password
 
-    def run_experiment(self, iterations):
+    def run_experiment(self, iterations, print=True):
         round_times = []
         round_attempts = []
 
         for i in range(iterations):
-            time_elapsed, attempts_made = self.crack_haystack(self.password)
+            time_elapsed, attempts_made = self.crack_haystack(self.password, print)
             round_times.append(time_elapsed)
             round_attempts.append(attempts_made)
-            print("**********\nCracked. Round " + str(i + 1))
-            print("Time: ", time_elapsed)
-            print("Attempts: ", attempts_made)
+            print_round(attempts_made, i, time_elapsed, print)
 
         mean_time = np.mean(round_times)
         mean_attempts = np.mean(round_attempts)
 
         return mean_time, mean_attempts, round_times
 
-    def crack_haystack(self, password):
+    def crack_haystack(self, password, print):
         guess = ''
         guesses_made = 0
         start = time.time()
@@ -39,7 +37,7 @@ class PasswordCracker:
             back_pad = get_random_pad(self.pad_list)
 
             guess = front_pad + get_random_password(self.password_list) + back_pad
-            if guesses_made % 100000 is 0:
+            if guesses_made % 100000 is 0 and print:
                 print("Guess " + str(guesses_made) + ": " + guess)
             guesses_made += 1
 
@@ -49,6 +47,13 @@ class PasswordCracker:
 
     def change_password(self, password):
         self.password = password
+
+
+def print_round(attempts_made, i, time_elapsed, print):
+    if print:
+        print("**********\nCracked. Round " + str(i + 1))
+        print("Time: ", time_elapsed)
+        print("Attempts: ", attempts_made)
 
 
 def get_random_password(passwords):
@@ -81,7 +86,10 @@ def password_in_file(password, passwords):
 
 
 def invalid_pad(pad, pad_list):
-    return is_not_homogeneous(pad) or len(pad) > 10 or pad[0] not in pad_list
+    if len(pad) == 0:
+        return False
+    else:
+        return is_not_homogeneous(pad) or len(pad) > 10 or pad[0] not in pad_list
 
 
 def is_not_homogeneous(pad):
@@ -95,6 +103,7 @@ def is_not_homogeneous(pad):
             return True
 
     return False
+
 
 def get_pad(pads):
     correct_pad = False
